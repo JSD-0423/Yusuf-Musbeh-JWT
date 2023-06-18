@@ -8,13 +8,12 @@ function configurePassport() {
     new Strategy(
       {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: "secret",
+        secretOrKey: process.env.SECRET_KEY,
       },
-      async (jwt_payload: string, cb: any) => {
-        console.log("here");
-        const user = await User.findByPk(jwt_payload);
-        if (!user) return cb(null, false);
-        cb(null, user);
+      async (jwt_payload, cb: any) => {
+        const userObject: User | null = await User.findByPk(jwt_payload.id);
+        if (!userObject) return cb(null, false);
+        cb(null, userObject);
       }
     )
   );
