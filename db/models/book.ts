@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../connection";
 class Book extends Model {
-  public id?: string;
+  public id?: number;
   public name?: string;
   public author?: string;
 }
@@ -9,7 +9,8 @@ class Book extends Model {
 Book.init(
   {
     id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true,
       allowNull: false,
     },
