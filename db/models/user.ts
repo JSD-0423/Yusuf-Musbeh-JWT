@@ -1,15 +1,10 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../connection";
 
-interface UserType {
-  id?: number;
-  name?: string;
-  password?: string;
-}
 class User extends Model {
   public id?: number;
   public email?: string;
-  public userName?: string;
+  public user_name?: string;
   public password?: string;
 }
 
@@ -26,7 +21,7 @@ User.init(
       allowNull: false,
       unique: true,
     },
-    userName: {
+    user_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },

@@ -3,7 +3,7 @@ import { User } from "../db/models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { serializeUser } from "passport";
+import { serializeUser, use } from "passport";
 import { RentedBook } from "../db/models/rented-books";
 import { Book } from "../db/models/book";
 dotenv.config();
@@ -12,25 +12,30 @@ async function postSignup(
   response: Response,
   next: NextFunction
 ) {
-  const { name, password } = request.body;
-  console.log(name, " === ", password);
-  if (!(name && password))
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "name and password are required" });
+  const { userName, password, email } = request.body;
+  if (!(userName && password && email))
+    return response.status(400).json({
+      statusCode: 400,
+      message: "username and email ,password are required",
+    });
 
-  const isExist = !!(await User.findOne({ where: { name: name } }));
+  const isExist = !!(await User.findOne({ where: { email: email } }));
   if (isExist)
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "user already exists with this name" });
+    return response.status(400).json({
+      statusCode: 400,
+      message: "user already exists with this email",
+    });
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = new User({ name: name, password: hashedPassword });
+  const user = new User({
+    user_name: userName,
+    email: email,
+    password: hashedPassword,
+  });
   await user.save();
   response.status(200).json({
     statusCode: 200,
     message: "singed up successfully ",
-    user: { name: user.userName },
+    user: { email: user.email, userName: user.user_name },
   });
 }
 
@@ -39,25 +44,25 @@ async function postLogin(
   response: Response,
   next: NextFunction
 ) {
-  const { name, password } = request.body;
-  if (!(name && password))
+  const { email, password } = request.body;
+  if (!(email && password))
     return response
       .status(400)
       .json({ statusCode: 400, message: "name and password are required" });
 
-  const user = await User.findOne({ where: { name: name } });
+  const user = await User.findOne({ where: { email: email } });
 
   if (!user || !bcrypt.compareSync(password, user.password ?? ""))
     return response
       .status(400)
-      .json({ statusCode: 400, message: "name or password wrong" });
+      .json({ statusCode: 400, message: "email or password wrong" });
 
   const payload = { id: user.id };
   const token = jwt.sign(payload, process.env.SECRET_KEY ?? "");
   response.status(200).json({
     statusCode: 200,
     message: "logged up successfully ",
-    user: { name: user.userName, token: token },
+    user: { email: user.email, name: user.user_name, token: token },
   });
 }
 
