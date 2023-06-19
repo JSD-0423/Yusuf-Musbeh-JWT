@@ -10,6 +10,6 @@ const publicRouter = Router();
 const protectedRouter = Router();
 publicRouter.post("/signup", postSignup);
 publicRouter.post("/login", postLogin);
-protectedRouter.post("/rent", postRent);
+protectedRouter.post("/rent/:bookId", postRent);
 protectedRouter.get("/rent", getRent);
 export { publicRouter, protectedRouter };

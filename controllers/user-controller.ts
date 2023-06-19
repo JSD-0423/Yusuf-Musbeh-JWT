@@ -84,7 +84,7 @@ async function postRent(
   response: Response,
   next: NextFunction
 ) {
-  const { bookId } = request.body;
+  const { bookId } = request.params;
   if (!bookId)
     return response
       .status(400)
