@@ -1,9 +1,15 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../connection";
 
+interface UserType {
+  id?: number;
+  name?: string;
+  password?: string;
+}
 class User extends Model {
   public id?: number;
-  public name?: string;
+  public email?: string;
+  public userName?: string;
   public password?: string;
 }
 
@@ -15,10 +21,14 @@ User.init(
       primaryKey: true,
       allowNull: false,
     },
-    name: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    userName: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     password: {
       type: DataTypes.STRING,

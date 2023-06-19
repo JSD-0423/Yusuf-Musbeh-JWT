@@ -1,6 +1,13 @@
 import { Router } from "express";
-import { postSignup } from "../controllers/user-controller";
+import {
+  postLogin,
+  postRent,
+  postSignup,
+} from "../controllers/user-controller";
 
-const router = Router();
-router.post("/signup", postSignup);
-export { router };
+const publicRouter = Router();
+const protectedRouter = Router();
+publicRouter.post("/signup", postSignup);
+publicRouter.post("/login", postLogin);
+protectedRouter.post("/rent", postRent);
+export { publicRouter, protectedRouter };

@@ -3,20 +3,24 @@ import { authenticateConnection } from "./db/connection";
 import { dbInit } from "./db/db-init";
 import { configurePassport } from "./utils/configurePasport";
 import passport from "passport";
-import { router as userRouter } from "./routes/user-route";
+import {
+  publicRouter as publicUserRouter,
+  protectedRouter as protectedUserRouter,
+} from "./routes/user-route";
+import { User } from "./db/models/user";
 
 const app: Express = express();
 app.use(express.json());
 app.use(passport.initialize());
 configurePassport();
-app.use(userRouter);
-app.get(
-  "/",
-  passport.authenticate("jwt", { session: false }),
-  (request, response, next) => {
-    response.send("you can see this page");
-  }
-);
+app.use(publicUserRouter);
+// assign passport authenticate middleware for protected routes
+app.use(passport.authenticate("jwt", { session: false }));
+app.use(protectedUserRouter);
+app.get("/", (request, response, next) => {
+  const user: User = request.user;
+  response.send("you can see thi s page");
+});
 authenticateConnection().then(() => {
   dbInit().then(() => {
     app.listen(3000, "localhost", () =>
