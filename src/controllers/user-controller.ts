@@ -13,18 +13,6 @@ async function postSignup(
   next: NextFunction
 ) {
   const { userName, password, email } = request.body;
-  if (!(userName && password && email))
-    return response.status(400).json({
-      statusCode: 400,
-      message: "username and email ,password are required",
-    });
-
-  const isExist = !!(await User.findOne({ where: { email: email } }));
-  if (isExist)
-    return response.status(400).json({
-      statusCode: 400,
-      message: "user already exists with this email",
-    });
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({
     user_name: userName,
