@@ -37,8 +37,8 @@ export let postSignupValidation: Schema = {
     },
     custom: {
       options: async (email) => {
-        const user = await User.findOne({ where: { email: email } });
-        if (user) {
+        const isExist = !!(await User.findOne({ where: { email: email } }));
+        if (isExist) {
           throw new Error("There is an account exist with email");
         }
         return true;
