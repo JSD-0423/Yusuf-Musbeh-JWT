@@ -33,17 +33,11 @@ async function postLogin(
   next: NextFunction
 ) {
   const { email, password } = request.body;
-  if (!(email && password))
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "name and password are required" });
-
   const user = await User.findOne({ where: { email: email } });
-
   if (!user || !bcrypt.compareSync(password, user.password ?? ""))
     return response
       .status(400)
-      .json({ statusCode: 400, message: "email or password wrong" });
+      .json({ statusCode: 400, message: "email or password is wrong" });
 
   const payload = { id: user.id };
   const token = jwt.sign(payload, process.env.SECRET_KEY ?? "");

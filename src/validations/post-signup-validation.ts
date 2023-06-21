@@ -1,11 +1,11 @@
 import { Schema } from "express-validator";
 import { User } from "../db/models/user";
 
-export let postSignupValidation: Schema = {
-  name: {
+export const postSignupValidation: Schema = {
+  userName: {
     in: "body",
     notEmpty: {
-      errorMessage: "name is required",
+      errorMessage: "userName is required",
     },
     isLength: {
       options: { min: 3, max: 15 },
@@ -38,11 +38,13 @@ export let postSignupValidation: Schema = {
     custom: {
       options: async (email) => {
         const isExist = !!(await User.findOne({ where: { email: email } }));
+        console.log(isExist);
         if (isExist) {
           throw new Error("There is an account exist with email");
         }
         return true;
       },
+      errorMessage: "There is an account exist with this email",
     },
   },
 };
