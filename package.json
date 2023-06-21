@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.ts"
+    "start": "nodemon src/app.ts"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
