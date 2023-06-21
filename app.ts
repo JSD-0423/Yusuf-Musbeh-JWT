@@ -1,7 +1,7 @@
 import express, { Express } from "express";
 import { authenticateConnection } from "./db/connection";
 import { dbInit } from "./db/db-init";
-import { configurePassport } from "./utils/configurePasport";
+import { configurePassport } from "./utils/configure-passport";
 import passport from "passport";
 import {
   publicRouter as publicUserRouter,
