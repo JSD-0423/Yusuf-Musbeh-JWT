@@ -28,8 +28,10 @@ export const postLoginValidation: Schema = {
     },
     custom: {
       options: async (email) => {
+        console.log(User);
         const isExist = !!(await User.findOne({ where: { email: email } }));
-        console.log(isExist);
+        const user = await User.findOne({ where: { email: email } });
+
         if (!isExist) {
           throw new Error("Email or password is wrong");
         }
