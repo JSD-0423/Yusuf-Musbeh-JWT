@@ -1,21 +1,25 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../connection";
+import {
+  Model,
+  Table,
+  ForeignKey,
+  Column,
+  DataType,
+} from "sequelize-typescript";
+import { Book } from "./book";
+import { User } from "./user";
+
+@Table({ timestamps: false, tableName: "rented_books" })
 class RentedBook extends Model {
-  public bookId?: number;
-  public userId?: number;
+  @ForeignKey(() => Book)
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  book_id!: number;
+
+  @ForeignKey(() => User)
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+  })
+  user_id!: number;
 }
 
-RentedBook.init(
-  {
-    bookId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-  },
-  { sequelize, timestamps: false, modelName: "rented_Book" }
-);
 export { RentedBook };

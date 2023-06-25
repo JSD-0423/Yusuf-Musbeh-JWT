@@ -1,28 +1,61 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../connection";
+import {
+  BelongsToMany,
+  Column,
+  DataType,
+  Model,
+  Table,
+} from "sequelize-typescript";
+import { User } from "./user";
+import { RentedBook } from "./rented-books";
+// import { RentedBook } from "./rented-books";
+
+@Table({ timestamps: false, modelName: "books" })
 class Book extends Model {
-  public id?: number;
-  public name?: string;
-  public author?: string;
+  @Column({
+    type: DataType.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  })
+  id!: number;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name!: string;
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  author!: string;
+  @BelongsToMany(() => User, () => RentedBook)
+  users!: User[];
 }
 
-Book.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-      allowNull: false,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  { sequelize, timestamps: false, modelName: "book" }
-);
+// class Book extends Model {
+//   public id?: number;
+//   public name?: string;
+//   public author?: string;
+// }
+//
+// Book.init(
+//   {
+//     id: {
+//       type: DataType.INTEGER,
+//       autoIncrement: true,
+//       primaryKey: true,
+//       allowNull: false,
+//     },
+//     name: {
+//       type: DataType.STRING,
+//       allowNull: false,
+//     },
+//     author: {
+//       type: DataType.STRING,
+//       allowNull: false,
+//     },
+//   },
+//   { sequelize, timestamps: false, modelName: "book" }
+// );
+
 export { Book };
