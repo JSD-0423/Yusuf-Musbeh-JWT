@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "passport";
 import {
   getRent,
   postLogin,
@@ -9,8 +10,9 @@ import { postSignupValidation } from "../validations/post-signup-validation";
 import { checkSchema } from "express-validator";
 import { handleError } from "../middlewares/error-middleware";
 import { postLoginValidation } from "../validations/post-login-validation";
+import { postRentValidation } from "../validations/post-rent-validation";
 const publicRouter = Router();
-const protectedRouter = Router();
+
 publicRouter.post(
   "/signup",
   checkSchema(postSignupValidation),
@@ -23,6 +25,12 @@ publicRouter.post(
   handleError,
   postLogin
 );
-protectedRouter.post("/rent/:bookId", postRent);
-protectedRouter.get("/rent", getRent);
-export { publicRouter, protectedRouter };
+publicRouter.use(passport.authenticate("jwt", { session: false }));
+publicRouter.post(
+  "/rent/:bookId",
+  checkSchema(postRentValidation),
+  handleError,
+  postRent
+);
+publicRouter.get("/rent", getRent);
+export { publicRouter };
