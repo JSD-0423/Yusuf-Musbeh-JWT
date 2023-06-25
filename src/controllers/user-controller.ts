@@ -4,8 +4,8 @@ import { User } from "../db/models/user";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-import { RentedBook } from "../db/models/rented-books";
 import { Book } from "../db/models/book";
+
 dotenv.config();
 async function postSignup(
   request: Request,
@@ -53,10 +53,9 @@ async function getRent(
   response: Response,
   next: NextFunction
 ) {
-  const userId = request.user.id;
-  const rentedBooks = await RentedBook.findAll({
-    where: { userId: userId },
-    include: [Book],
+  const user = request.user as User;
+  const rentedBooks = await user.$get("books", {
+    attributes: ["id", "name", "author"],
   });
   response.status(200).json({ statusCode: 200, books: rentedBooks });
 }
@@ -66,33 +65,40 @@ async function postRent(
   response: Response,
   next: NextFunction
 ) {
-  const { bookId } = request.params;
-  if (!bookId)
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "bookId is required" });
-  const user: User = request.user;
-  const book = await Book.findByPk(bookId);
-  if (!book)
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "there is no book with this id" });
-  const isRented = !!(await RentedBook.findOne({
-    where: {
-      [Op.and]: {
-        userId: user.id,
-        bookId: bookId,
-      },
-    },
-  }));
-  if (isRented)
-    return response
-      .status(400)
-      .json({ statusCode: 400, message: "this book is already rented" });
-  const rentedBook = new RentedBook({ bookId: bookId, userId: user.id });
-  await rentedBook.save();
-  response
-    .status(200)
-    .json({ statusCode: 200, message: "rent book successfully" });
+  try {
+    // const { bookId } = request.params;
+    // if (!bookId)
+    //   return response
+    //     .status(400)
+    //     .json({ statusCode: 400, message: "bookId is required" });
+    // const book = await Book.findByPk(bookId);
+    // if (!book)
+    //   return response
+    //     .status(400)
+    //     .json({ statusCode: 400, message: "there is no book with this id" });
+    //
+    // const user = request.user as User;
+    //
+    // const isRented = await user?.$has("book", book);
+    // if (isRented)
+    //   return response
+    //     .status(400)
+    //     .json({ statusCode: 400, message: "this book is already rented" });
+    // const rentedBook = await user.addBook(book);
+    const id = request.params.bookId;
+    const user = request.user as User;
+    const book = await Book.findByPk(id);
+    const rentedBook = await user?.$add("book", book!);
+    response.status(200).json({
+      statusCode: 200,
+      message: "rent book successfully",
+      data: rentedBook,
+    });
+  } catch (e) {
+    console.log(e);
+    response
+      .status(500)
+      .json({ statusCode: 500, message: "Something went wrong" });
+  }
 }
 export { postSignup, postLogin, postRent, getRent };
