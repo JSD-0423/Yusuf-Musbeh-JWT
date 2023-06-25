@@ -10,10 +10,10 @@ function configurePassport() {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: process.env.SECRET_KEY,
       },
-      async (jwt_payload, cb: any) => {
+      async (jwt_payload: any, done: any) => {
         const userObject: User | null = await User.findByPk(jwt_payload.id);
-        if (!userObject) return cb(null, false);
-        cb(null, userObject);
+        if (!userObject) return done("invalid token", false);
+        return done(null, userObject);
       }
     )
   );
