@@ -66,29 +66,11 @@ async function postRent(
   next: NextFunction
 ) {
   try {
-    // const { bookId } = request.params;
-    // if (!bookId)
-    //   return response
-    //     .status(400)
-    //     .json({ statusCode: 400, message: "bookId is required" });
-    // const book = await Book.findByPk(bookId);
-    // if (!book)
-    //   return response
-    //     .status(400)
-    //     .json({ statusCode: 400, message: "there is no book with this id" });
-    //
-    // const user = request.user as User;
-    //
-    // const isRented = await user?.$has("book", book);
-    // if (isRented)
-    //   return response
-    //     .status(400)
-    //     .json({ statusCode: 400, message: "this book is already rented" });
-    // const rentedBook = await user.addBook(book);
     const id = request.params.bookId;
     const user = request.user as User;
     const book = await Book.findByPk(id);
     const rentedBook = await user?.$add("book", book!);
+
     response.status(200).json({
       statusCode: 200,
       message: "rent book successfully",
