@@ -7,7 +7,6 @@ import {
 } from "sequelize-typescript";
 import { User } from "./user";
 import { RentedBook } from "./rented-books";
-// import { RentedBook } from "./rented-books";
 
 @Table({ timestamps: false, modelName: "books" })
 class Book extends Model {
@@ -31,31 +30,5 @@ class Book extends Model {
   @BelongsToMany(() => User, () => RentedBook)
   users!: User[];
 }
-
-// class Book extends Model {
-//   public id?: number;
-//   public name?: string;
-//   public author?: string;
-// }
-//
-// Book.init(
-//   {
-//     id: {
-//       type: DataType.INTEGER,
-//       autoIncrement: true,
-//       primaryKey: true,
-//       allowNull: false,
-//     },
-//     name: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//     author: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//   },
-//   { sequelize, timestamps: false, modelName: "book" }
-// );
 
 export { Book };

@@ -32,29 +32,5 @@ class User extends Model {
   @BelongsToMany(() => Book, () => RentedBook)
   books!: Book[];
 }
-//
-// User.init(
-//   {
-//     id: {
-//       type: DataType.INTEGER,
-//       autoIncrement: true,
-//       primaryKey: true,
-//       allowNull: false,
-//     },
-//     email: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//       unique: true,
-//     },
-//     user_name: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//     password: {
-//       type: DataType.STRING,
-//       allowNull: false,
-//     },
-//   },
-//   { sequelize, timestamps: false, modelName: "user" }
-// );
+
 export { User };

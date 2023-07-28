@@ -3,14 +3,13 @@ import { authenticateConnection } from "./db/connection";
 import { dbInit } from "./db/db-init";
 import { configurePassport } from "./utils/configure-passport";
 import passport from "passport";
-import { publicRouter as publicUserRouter } from "./routes/user-route";
-import { User } from "./db/models/user";
+import { router as userRouter } from "./routes/user-route";
 
 const app: Express = express();
 app.use(express.json());
 app.use(passport.initialize());
 configurePassport();
-app.use(publicUserRouter);
+app.use(userRouter);
 authenticateConnection().then(() => {
   dbInit().then(() => {
     app.listen(3000, "localhost", () =>
